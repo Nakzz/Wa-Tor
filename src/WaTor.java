@@ -1,5 +1,19 @@
+//////////////////// ALL ASSIGNMENTS INCLUDE THIS SECTION /////////////////////
 //
-//FIXME  file header comment
+// Title:            WarTor
+// Files:            WarTor.java
+// Semester:         Spring 2018
+//
+// Author:           Ajmain Naqib
+// Email:            naqib@wisc.edu
+// CS Login:         ajmain
+// Lecturer's Name:  Marc        
+//
+///////////////////////////// CREDIT OUTSIDE HELP /////////////////////////////
+//
+// No help received from any person or other source.
+//
+/////////////////////////////// 80 COLUMNS WIDE ///////////////////////////////
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,7 +24,10 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-//FIXME class header comment
+/**
+ * This class contains the main method to run the simulation for WaTor.
+ * 
+*/
 
 public class WaTor { 
     
@@ -21,8 +38,15 @@ public class WaTor {
      * for System.in is allocated and used to interact with the user.
      *  
      * @param args (unused)
+     * @throws FileNotFoundException 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
+        
+        //test inputs from file
+        //File file = new File("C:/Temp/JAVA/WaTor/src/INPUT2.txt");
+        //Scanner input = new Scanner(file);
+       
+        
         
         //scanner and random number generator for use throughout
         Scanner input = new Scanner(System.in);
@@ -55,9 +79,13 @@ public class WaTor {
         //to be used when saving or loading parameters in Milestone 3
         int[] simulationParameters = null;
         
+        //vars to store value
+        int fishCount, sharkCount, fishPlaced, sharkPlaced;
+        
         //welcome message
-
-        //Ask user if they would like to load simulation parameters from a file. 
+        System.out.println("Welcome to Wa-Tor");
+        
+      //Ask user if they would like to load simulation parameters from a file. 
         //If the user enters a y or Y as the only non-whitespace characters
         //then prompt for filename and call loadSimulationParameters
         //TODO in Milestone 3
@@ -102,13 +130,16 @@ public class WaTor {
         
 
         //place the initial fish and sharks and print out the number 
-        //placed
+        
         int numFish = 0;
         int numSharks = 0;
 
-        placeFish(fish, startingFish, fishBreed, randGen);
-        placeSharks(fish, sharks,startingSharks, sharksBreed, randGen);
-        //TODO: Print out the number
+        numFish = placeFish(fish, startingFish, fishBreed, randGen);
+        numSharks = placeSharks(fish, sharks,startingSharks, sharksBreed, randGen);
+        //placed
+        
+        System.out.println("Placed "+ numFish +" fish.");
+        System.out.println("Placed "+ numSharks +" sharks.");
           
 
         int currentChronon = 1;
@@ -118,16 +149,20 @@ public class WaTor {
         while ( !simulationEnd){
 
             //print out the locations of the fish and sharks
-
+            showFishAndSharks(currentChronon, fish, sharks);
+            
             //prompt user for Enter, # of chronon, or 'end'
+            System.out.print("Press Enter, # of chronon, or 'end': ");
+            
             //Enter advances to next chronon, a number
             //entered means run that many chronon, (TODO Milestone 2),
             //'end' will end the simulation
-            System.out.print("Press Enter, # of chronon, or 'end': ");
+            
             String response = input.nextLine().trim();
             if (response.equalsIgnoreCase("end")) {
                 break; //leave simulation loop
             }
+   
    
             //clear fishMoved and sharksMoved from previous chronon
             clearMoves(fishMoved);
@@ -140,9 +175,9 @@ public class WaTor {
             //TODO Milestone 2
                 
             //increment current chronon and count the current number of fish and sharks
-            //TODO Milestone 1
-            countCreatures(fish);
-            countCreatures(sharks)
+            currentChronon++;
+            fishCount= countCreatures(fish);
+            sharkCount= countCreatures(sharks);
             
 
             //if all the fish or sharks are gone then end simulation
@@ -150,7 +185,7 @@ public class WaTor {
         };
         
         //print the final ocean contents
-        //TODO Milestone 1
+        showFishAndSharks(currentChronon, fish, sharks);
         
         //Print out why the simulation ended.
         if ( numSharks <= 0 ) {
@@ -495,26 +530,30 @@ public class WaTor {
     public static void showFishAndSharks(int chronon, int[][] fish, int[][] sharks) {
         int fishCount = 0;
         int sharkCount = 0;
-        int yRange = fish.length; // Board Height
-        int xRange = fish[0].length; // Board Width
+        int xRange = fish.length; // Board row
+        int yRange = fish[0].length; // Board column
 
         
         System.out.println("Chronon: "+ chronon);
         
 
-        for (int i = 0; i < xRange; i++) {
-            for (int j = 0; j < yRange; j++) {
-                if(fish[j][i] == Config.FISH_MARK) {
-                    fishCount++;
-                    System.out.print(Config.FISH_MARK + " ");
-                } else if(sharks[j][i] == Config.SHARK_MARK) {
-                    fishCount++;
-                    System.out.print(Config.SHARK_MARK + " ");
-                } 
-                
+        for (int row = 0; row < xRange; row++) {
+            for (int col = 0; col < yRange; col++) {
+                if((fish[row][col] == Config.EMPTY) && sharks[row][col] == Config.EMPTY) {
+                    System.out.print(Config.WATER_MARK + " ");
+                } else {
+                    if((sharks[row][col] != Config.EMPTY)) {
+                        sharkCount++;
+                        System.out.print(Config.SHARK_MARK + " ");
+                    } else if((fish[row][col] != Config.EMPTY)) {
+                        fishCount++;
+                        System.out.print(Config.FISH_MARK + " ");
+                    }  
+                }
             }
             System.out.println();
         }
+        
         
 
         System.out.println("fish:" + fishCount+ " sharks:"+ sharkCount);
@@ -534,8 +573,8 @@ public class WaTor {
      *              place the fish in that location, randomly choosing its age from 0 up to 
      *              and including fishBreed.
      *          If the location is already occupied, generate another location and try again.
-     *     If a single fish is not placed after Config.MAX_PLACE_ATTEMPTS times, then stop trying
-     *     to place the rest of the fish.
+     *      On the Config.MAX_PLACE_ATTEMPTS try, whether or not the fish is successfully placed,
+     *      stop trying to place additional fish. 
      * Return the number of fish actually placed.
      * 
      * @param fish The array containing all the ages of all the fish.
@@ -547,33 +586,37 @@ public class WaTor {
     public static int placeFish(int[][] fish, int startingFish, int fishBreed, Random randGen) {
         int numFishPlaced = 0;
         int placeAttempt = 0;
-        int xCoord, yCoord, fishAge, atCoordinate;
-        int yRange = fish.length; // Board Height
-        int xRange = fish[0].length; // Board Width
+        int xCoord, yCoord, fishAge;
+        int xRange = fish.length; // Board row
+        int yRange = fish[0].length; // Board column
+
+        boolean fishPlaced = false;
+        
         
         for(int i=0; i<startingFish; i++) {
-            placeAttempt=0;
+            placeAttempt = 0;
+            fishPlaced= false;
             
-            do {
-                xCoord=randGen.nextInt(xRange);
-                yCoord=randGen.nextInt(yRange);
-
+            while((placeAttempt < Config.MAX_PLACE_ATTEMPTS) && (fishPlaced==false)) {
+                xCoord = randGen.nextInt(xRange);
+                yCoord = randGen.nextInt(yRange);
                 placeAttempt++;
-                atCoordinate =fish[yCoord][xCoord];
                 
-                if(atCoordinate == Config.WATER_MARK) {
-                    fishAge= randGen.nextInt(fishBreed+1);
-                    fish[yCoord][xCoord] = fishAge;
-                } 
+                if(fish[xCoord][yCoord] == Config.EMPTY) {
+                    fishAge = randGen.nextInt(fishBreed+1);
+                    fish[xCoord][yCoord] =  fishAge;
+                    numFishPlaced++;
+                    fishPlaced = true;
+                } else {
+                    fishPlaced= false;
+                }
                 
-                if((atCoordinate == Config.FISH_MARK) ||(atCoordinate == Config.SHARK_MARK) ) {
-                    continue;
-                } 
-                
-                    
-                
-
-            } while (placeAttempt < Config.MAX_PLACE_ATTEMPTS);
+                if((placeAttempt == Config.MAX_PLACE_ATTEMPTS)) {
+                    return numFishPlaced;
+                }
+            }
+            
+            
             
         }
         
@@ -611,33 +654,38 @@ public class WaTor {
         int numSharksPlaced = 0;
         int placeAttempt = 0;
         int xCoord, yCoord, sharkAge, atCoordinate;
-        int yRange = fish.length; // Board Height
-        int xRange = fish[0].length; // Board Width
+        int xRange = sharks.length; // Board row
+        int yRange = sharks[0].length; // Board column
+        
+       boolean sharkPlaced = false;
+        
         
         for(int i=0; i<startingSharks; i++) {
-            placeAttempt=0;
+            placeAttempt = 0;
+            sharkPlaced= false;
             
-            do {
-                xCoord=randGen.nextInt(xRange);
-                yCoord=randGen.nextInt(yRange);
-
+            while((placeAttempt < Config.MAX_PLACE_ATTEMPTS) && (sharkPlaced==false)) {
+                xCoord = randGen.nextInt(xRange);
+                yCoord = randGen.nextInt(yRange);
                 placeAttempt++;
-                atCoordinate =fish[yCoord][xCoord];
                 
-                if(atCoordinate == Config.WATER_MARK) {
-                    sharkAge= randGen.nextInt(sharksBreed+1);
-                    sharks[yCoord][xCoord] = sharkAge;
+                if((fish[xCoord][yCoord] == Config.EMPTY) && (sharks[xCoord][yCoord] == Config.EMPTY)) {
+                    sharkAge = randGen.nextInt(sharksBreed + 1);
+                    sharks[xCoord][yCoord] =  sharkAge;
+                    numSharksPlaced++;
+                    sharkPlaced = true;
                 } else {
-                   continue;
-                } 
+                    sharkPlaced= false;
+                }
                 
-
-            } while (placeAttempt < Config.MAX_PLACE_ATTEMPTS);
+                if((placeAttempt == Config.MAX_PLACE_ATTEMPTS)) {
+                    return numSharksPlaced;
+                }
+            }
+            
+            
             
         }
-        
-        
-        return numFishPlaced;
         
         return numSharksPlaced;
     }
@@ -652,13 +700,15 @@ public class WaTor {
     public static int countCreatures(int[][] fishOrSharks) {
         int numCreatures = 0;
         
-        int yRange = fishOrSharks.length; // Board Height
-        int xRange = fishOrSharks[0].length; // Board Width
         
-        for (int i = 0; i < xRange; i++) {
-            for (int j = 0; j < yRange; j++) {
+        int xRange = fishOrSharks.length; // Board row
+        int yRange = fishOrSharks[0].length; // Board column
+        
+        for (int row = 0; row < xRange; row++) {
+            for (int column = 0; column < yRange; column++) {
                 
-                if (fishOrSharks[yRange][xRange]== (int)fishOrSharks[yRange][xRange]) {
+                
+                if (fishOrSharks[row][column]!= Config.EMPTY) {
                     numCreatures++;
                 }
             }
@@ -946,7 +996,10 @@ public class WaTor {
      * prints "F  5", a 5 right justified in a field of size 3.
      * 
      * @param simulationParameters The array of simulation parameter values.
-     * @param history The ArrayList containing the number of fish and number of sharks at each chronon.
+     * * @param history Each element in the ArrayList is an array with information about a specific
+     * chronon. The array has 3 elements: chronon, number of fish, and number of sharks,
+     * in that order.
+
      * @param oceanWidth The width of the ocean.
      * @param oceanHeight The height of the ocean.
      * @param filename The name of the file to write the parameters and chart to.

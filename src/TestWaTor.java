@@ -1,5 +1,19 @@
+//////////////////// ALL ASSIGNMENTS INCLUDE THIS SECTION /////////////////////
 //
-//FIXME  file header comment
+// Title:            TestWarTor
+// Files:            TestWarTor.java
+// Semester:         Spring 2018
+//
+// Author:           Ajmain Naqib
+// Email:            naqib@wisc.edu
+// CS Login:         ajmain
+// Lecturer's Name:  Marc        
+//
+///////////////////////////// CREDIT OUTSIDE HELP /////////////////////////////
+//
+// No help received from any person or other source.
+//
+/////////////////////////////// 80 COLUMNS WIDE ///////////////////////////////
 
 
 /**
@@ -32,7 +46,7 @@ import java.util.Random;
  * intended for use within this class.
  * 
  * @author Jim Williams
- * @author TODO add your name here when you add tests and comment the tests
+ * @author Ajmain Naqib
  *
  */
 public class TestWaTor {
@@ -48,7 +62,7 @@ public class TestWaTor {
         //milestone 1
         testClearMoves();
         testEmptyArray();
-        testCountCreatures();
+        //testCountCreatures();
         
         //The best way to test the following is probably to compare
         //output with the examples.
@@ -314,7 +328,12 @@ public class TestWaTor {
     
     /**
      * This runs some tests on the clearMoves method. 
-     * 1. TODO describe each test in your own words. 
+     * 
+     * This test assigns true to each cell of the array, then calls the clearMoves method from 
+     * WarTor.java. Given that the method works perfectly fine, each of the cell should be false.
+     * Next this test method checks if any of the cell is assigned as true, if so, the test fails.
+     * Otherwise the test passes.
+     *  
      */        
     private static void testClearMoves() {
         boolean error = false;
@@ -343,7 +362,12 @@ public class TestWaTor {
     
     /**
      * This runs some tests on the emptyArray method. 
-     * 1. TODO describe each test in your own words. 
+     * 
+     * This test assigns a value to each cell of the array, then calls the emptyArray method from 
+     * WarTor.java. Given that the method works perfectly fine, each of the cell should be empty.
+     * Next this test method checks if any of the cell is assigned a value other than Config.EMPTY, 
+     * if so, prints out the coordinate of the occupied cell and the test fails. Otherwise the test passes.
+     * 
      */        
     private static void testEmptyArray() {
         boolean error = false;
