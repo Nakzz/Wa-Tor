@@ -60,8 +60,8 @@ public class TestWaTor {
     public static void main(String []args) {
 
         //milestone 1
-        testClearMoves();
-        testEmptyArray();
+        //testClearMoves();
+        //testEmptyArray();
         //testCountCreatures();
         
         //The best way to test the following is probably to compare
@@ -71,13 +71,14 @@ public class TestWaTor {
         //placeSharks      
        
         //milestone 2
-//        testUnoccupiedPositions();
-//        testChooseMove();
-//        testFishPositions();
+        //testUnoccupiedPositions();
+        //testChooseMove();
+        //testFishPositions();
         
         //test code for fishPositions would be similar to test code for unoccupiedPositions
         //test fishSwimAndBreed and sharksHuntAndBreed may be easiest
         //by comparing output to examples.
+
         
         //milestone 3
         //comparing results of either inputting from or outputting to files
@@ -100,6 +101,8 @@ public class TestWaTor {
         for ( int i = 0; i < list1.size(); i++) {
             int[]move1 = list1.get(i);
             int[]move2 = list2.get(i);
+            
+            
             if ( move1[0] == move2[0] && move1[1] == move2[1]) {
                 //ok
             } else {
@@ -122,6 +125,10 @@ public class TestWaTor {
         
         int [][]fish = new int[][]{{-1,-1,-1},{-1,0,-1},{-1,-1,-1}};
         int [][]sharks = new int[][]{{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}};
+        
+        if(Config.DEBUG){
+            WaTor.showFishAndSharks(0, fish, sharks);
+        }
         
         ArrayList<int[]> positions = WaTor.unoccupiedPositions( fish, sharks, 1, 1);
         ArrayList<int[]>expected = new ArrayList<>();
@@ -222,7 +229,95 @@ public class TestWaTor {
      */
     private static void testFishPositions() {
         
-        //TODO Implement in Milestone 2
+        boolean error = false;
+        
+        int [][]fish = new int[][]{{-1,-1,-1},{-1,3,-1},{-1,-1,2}};
+        
+        
+        ArrayList<int[]> positions = WaTor.fishPositions( fish, 1, 1);
+        ArrayList<int[]>expected = new ArrayList<>();
+        if ( !matchingArrayLists( expected, positions)) {
+            error = true;
+            System.err.println("testFishPositions 1 :" );
+        }
+        
+        positions = WaTor.fishPositions( fish, 0, 1);
+        expected = new ArrayList<>();
+        expected.add( new int[]{1,1});
+        if ( !matchingArrayLists( expected, positions)) {
+            error = true;
+            System.err.println("testFishPositions 2 :" );
+        }
+        
+        positions = WaTor.fishPositions( fish, 1, 2);
+        expected = new ArrayList<>();
+        expected.add( new int[]{2,2});
+        expected.add( new int[]{1,1});
+
+        if ( !matchingArrayLists( expected, positions)) {
+            error = true;
+            System.err.println("testFishPositions 3 :" );
+        }        
+        
+        //TODO: fix these tests before submission
+//        fish = new int[][]{{0,0,0},{0,0,0},{0,0,0}};
+//        sharks = new int[][]{{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}};
+//        
+//        positions = WaTor.unoccupiedPositions( fish, sharks, 1, 1);
+//        expected = new ArrayList<>();
+//
+//        if ( !matchingArrayLists( expected, positions)) {
+//            error = true;
+//            System.err.println("testUnoccupiedPositions 4 :" );
+//        }
+//        
+//        positions = WaTor.unoccupiedPositions( fish, sharks, 0, 1);
+//        expected = new ArrayList<>();
+//
+//        if ( !matchingArrayLists( expected, positions)) {
+//            error = true;
+//            System.err.println("testUnoccupiedPositions 5 :" );
+//        }
+//        
+//        positions = WaTor.unoccupiedPositions( fish, sharks, 0, 0);
+//        expected = new ArrayList<>();
+//
+//        if ( !matchingArrayLists( expected, positions)) {
+//            error = true;
+//            System.err.println("testUnoccupiedPositions 6 :" );
+//        }        
+//        fish = new int[][]{{0,0,0},{-1,0,0},{0,0,0}};
+//        sharks = new int[][]{{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}};
+//        
+//        positions = WaTor.unoccupiedPositions( fish, sharks, 1, 1);
+//        expected = new ArrayList<>();
+//        expected.add( new int[]{1,0});
+//
+//        if ( !matchingArrayLists( expected, positions)) {
+//            error = true;
+//            System.err.println("testUnoccupiedPositions 7 :" );
+//        }
+//        
+//        positions = WaTor.unoccupiedPositions( fish, sharks, 0, 1);
+//        expected = new ArrayList<>();
+//        if ( !matchingArrayLists( expected, positions)) {
+//            error = true;
+//            System.err.println("testUnoccupiedPositions 8 :" );
+//        }
+//        
+//        positions = WaTor.unoccupiedPositions( fish, sharks, 0, 0);
+//        expected = new ArrayList<>();
+//        expected.add( new int[]{1,0});
+//        if ( !matchingArrayLists( expected, positions)) {
+//            error = true;
+//            System.err.println("testUnoccupiedPositions 9 :" );
+//        }
+//        
+        if ( error) {
+            System.err.println("testUnoccupiedPositions failed");
+        } else {
+            System.out.println("testUnoccupiedPositions passed");            
+        }
     }
     
     /**

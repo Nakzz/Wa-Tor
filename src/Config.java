@@ -56,5 +56,5 @@ public class Config {
      * debug information or not. Set to true and run the program
      * to see debug output.
      */
-    final static boolean DEBUG = false;
+    final static boolean DEBUG = true;
 }
