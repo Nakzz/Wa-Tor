@@ -60,9 +60,9 @@ public class TestWaTor {
     public static void main(String []args) {
 
         //milestone 1
-        //testClearMoves();
-        //testEmptyArray();
-        //testCountCreatures();
+        testClearMoves();
+        testEmptyArray();
+        testCountCreatures();
         
         //The best way to test the following is probably to compare
         //output with the examples.
@@ -71,9 +71,9 @@ public class TestWaTor {
         //placeSharks      
        
         //milestone 2
-        //testUnoccupiedPositions();
-        //testChooseMove();
-        //testFishPositions();
+        testUnoccupiedPositions();
+        testChooseMove();
+        testFishPositions();
         
         //test code for fishPositions would be similar to test code for unoccupiedPositions
         //test fishSwimAndBreed and sharksHuntAndBreed may be easiest
