@@ -1,0 +1,11 @@
+seed=1
+ocean_width=1
+ocean_height=1
+starting_fish=1
+starting_sharksd=1
+fish_breed=1
+sharks_breed=1
+sharks_starve=1
+
+Population Chart
+Numbers of fish(.) and sharks(O) in units of 0.
