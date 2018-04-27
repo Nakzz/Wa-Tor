@@ -1,8 +1,0 @@
-seed=123
-ocean_width=30
-ocean_height=10
-starting_fish=100
-starting_sharks=10
-fish_breed=3
-sharks_breed=10
-sharks_starve=3

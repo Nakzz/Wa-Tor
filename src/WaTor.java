@@ -44,18 +44,16 @@ public class WaTor {
      * @param args (unused)
      */
 
-    public static boolean ajDebug = false;
+    //public static boolean ajDebug = false;
 
     public static void main(String[] args) throws FileNotFoundException {
 
         // test inputs from file
-        //File file = new File("C:/Temp/JAVA/WaTor/src/INPUT2.txt");
-        //Scanner input = new Scanner(file);
-
-
+        // File file = new File("C:/Temp/JAVA/WaTor/src/INPUT2.txt");
+        // Scanner input = new Scanner(file);
 
         // scanner and random number generator for use throughout
-         Scanner input = new Scanner(System.in);
+        Scanner input = new Scanner(System.in);
         Random randGen = new Random();
 
         // values at the same index in these parallel arrays correspond to the
@@ -85,8 +83,6 @@ public class WaTor {
         // to be used when saving or loading parameters in Milestone 3
         int[] simulationParameters = null;
 
-        // vars to store value
-        int fishPlaced, sharkPlaced;
 
         // welcome message
         System.out.println("Welcome to Wa-Tor");
@@ -103,11 +99,9 @@ public class WaTor {
             String value = input.nextLine();
             try {
                 simulationParameters = loadSimulationParameters(value);
-            } catch (Exception e) {
-                // TODO: handle exception
+            } catch (Exception IOExceptions) {
                 System.out.println("File not found: " + value);
             }
-
         }
         // prompts the user to enter the simulation parameters
         if (simulationParameters == null) {
@@ -149,7 +143,6 @@ public class WaTor {
 
 
         // place the initial fish and sharks and print out the number
-
         int numFish = 0;
         int numSharks = 0;
 
@@ -183,8 +176,6 @@ public class WaTor {
 
             String response = input.nextLine().trim();
 
-
-
             // check to see if the user entered an input
             if (response.isEmpty()) {
                 // store all the values of sharks and fish during each chronon
@@ -199,12 +190,13 @@ public class WaTor {
                 clearMoves(fishMoved);
                 clearMoves(sharksMoved);
 
+                //fish and sharks action
                 fishSwimAndBreed(fish, sharks, fishMoved, fishBreed, randGen);
 
                 sharksHuntAndBreed(fish, sharks, fishMoved, sharksMoved, sharksBreed, starve,
                     sharksStarve, randGen);
 
-                // increment current chronon and count the current number of fish and sharks
+                // counting number of fish and sharks
                 numFish = countCreatures(fish);
                 numSharks = countCreatures(sharks);
 
@@ -218,6 +210,7 @@ public class WaTor {
             } else if (response.matches(".*\\d+.*")) {
                 numChronon = Integer.parseInt(response);
                 for (int i = 0; i < numChronon; i++) {
+                  //add stats to an array
                     int[] historyOutput = new int[3];
                     historyOutput[0] = currentChronon;
                     historyOutput[1] = numFish;
@@ -229,15 +222,12 @@ public class WaTor {
                     clearMoves(fishMoved);
                     clearMoves(sharksMoved);
 
+                  //fish and sharks action
                     fishSwimAndBreed(fish, sharks, fishMoved, fishBreed, randGen);
-
                     sharksHuntAndBreed(fish, sharks, fishMoved, sharksMoved, sharksBreed, starve,
                         sharksStarve, randGen);
 
-                    if (ajDebug) {
-                        // showFishAndSharks(currentChronon, fish, sharks);
-                    }
-
+                   
                     // increment current chronon and count the current number of fish and sharks
                     // currentChronon++;
                     numFish = countCreatures(fish);
@@ -254,12 +244,15 @@ public class WaTor {
                 break; // leave simulation loop
             }
         }
+        
+        //add stats to an array
         int[] historyOutput = new int[3];
         historyOutput[0] = currentChronon;
         historyOutput[1] = numFish;
         historyOutput[2] = numSharks;
         history.add(historyOutput);
-        // print the final ocean contents
+        
+        // print the final ocean contents & count
         showFishAndSharks(currentChronon, fish, sharks);
         numFish = countCreatures(fish);
         numSharks = countCreatures(sharks);
@@ -299,10 +292,8 @@ public class WaTor {
                         } catch (Exception IOExceptions) {
                             System.out.print("Unable to save to: " + filename);
                             parafileSaved = false;
-
                         }
                     }
-
                 } else {
                     parafileSaved = true;
                 }
@@ -319,7 +310,8 @@ public class WaTor {
         // repeat the code to prompt asking the user if they want to save
         // the population chart.
         boolean chartfileSaved = false;
-        // System.out.print("Save population chart (y/n): ");
+        
+        //prompting to save population chart
         while (!chartfileSaved) {
             System.out.print("Save population chart (y/n): ");
             String response = input.nextLine();
@@ -331,8 +323,8 @@ public class WaTor {
                         savePopulationChart(simulationParameters, history, oceanWidth, oceanHeight,
                             filename);
                         chartfileSaved = true;
-
                     } catch (Exception IOExceptions) {
+                        // if can't save file
                         System.out.print("Unable to save to: " + filename);
                         chartfileSaved = false;
                     }
@@ -341,7 +333,7 @@ public class WaTor {
                 chartfileSaved = true;
             }
         }
-
+        //closing scanner
         input.close();
     }
 
@@ -666,7 +658,7 @@ public class WaTor {
             }
             System.out.println();
         }
-        // prints out the final values
+        // prints out number of fish and shark
         System.out.println("fish:" + fishcount + " sharks:" + sharkcount);
     }
 
@@ -698,22 +690,23 @@ public class WaTor {
             fishreturned = false;
             // the loop runs as long as attempts > Config.MAX... & fishreturned is false
             while (Config.MAX_PLACE_ATTEMPTS > attempts && fishreturned == false) {
-                int randomX = randGen.nextInt(fish.length); // random value (0 - (fish.lenth-1))
-                // random value (0-(fish[randomX].length-1))
+                //random value from 0 to fish.lenth-1
+                int randomX = randGen.nextInt(fish.length); 
+                //random value from 0 to fish[randomX].lenth-1
                 int randomY = randGen.nextInt(fish[randomX].length);
                 attempts++;
-                if (fish[randomX][randomY] == Config.EMPTY) { // checks for empty position
+                if (fish[randomX][randomY] == Config.EMPTY) { // checks if position is empty
                     numFishPlaced++;
-                    age = randGen.nextInt(fishBreed + 1); // random # from 0 - fishBreed
+                    // random number from 0 to fishBreed
+                    age = randGen.nextInt(fishBreed + 1); 
                     fishreturned = true; // ends the loop
-                    fish[randomX][randomY] = age; // sets position equal to age
+                    fish[randomX][randomY] = age; // sets position to age
                 } else {
                     fishreturned = false; // keeps the loop running
                 }
-                if ((attempts == Config.MAX_PLACE_ATTEMPTS)) { // checks the # of attempts
-                    return numFishPlaced; // if true return numFishPlaced
+                if ((attempts == Config.MAX_PLACE_ATTEMPTS)) {
+                    return numFishPlaced; // if max attempt is reached, return fishplaced 
                 }
-
             }
         }
         return numFishPlaced;
@@ -757,7 +750,8 @@ public class WaTor {
                 if (fish[randomX][randomY] == Config.EMPTY
                     && sharks[randomX][randomY] == Config.EMPTY) {
                     numSharksPlaced++;
-                    age = randGen.nextInt(sharksBreed + 1); // random # from 0 - fishBreed
+                    // random number from 0 to sharkBreed
+                    age = randGen.nextInt(sharksBreed + 1); 
                     fishreturned = true; // ends the loop
                     sharks[randomX][randomY] = age; // random age to empty position
                 } else {
@@ -782,7 +776,7 @@ public class WaTor {
     public static int countCreatures(int[][] fishOrSharks) {
         int numCreatures = 0;
 
-        // runs through every position in the array inputed
+        // iterates through every position in the array inputed
         for (int row = 0; row < fishOrSharks.length; row++) {
             for (int col = 0; col < fishOrSharks[row].length; col++) {
                 if (fishOrSharks[row][col] != Config.EMPTY) {
@@ -818,14 +812,14 @@ public class WaTor {
             // checks to see that position is empty
             if (fish[fish.length - 1][col] == Config.EMPTY
                 && sharks[sharks.length - 1][col] == Config.EMPTY) {
-                // adds the position int[] an array then into the unoccupied position
+                // adds the position to an array then into the unoccupied position
                 unoccupied.add(new int[] {fish.length - 1, col});
             }
         }
 
         else {
             if (fish[row - 1][col] == Config.EMPTY && sharks[row - 1][col] == Config.EMPTY) {
-                // adds the position int[] an array then into the unoccupied position
+                // adds the position to an array then into the unoccupied position
                 unoccupied.add(new int[] {row - 1, col});
             }
         }
@@ -833,12 +827,12 @@ public class WaTor {
         if (row == fish.length - 1) {
             // checks to see that position is empty
             if (fish[0][col] == Config.EMPTY && sharks[0][col] == Config.EMPTY) {
-                // adds the position int[] an array then into the unoccupied position
+                // adds the position to an array then into the unoccupied position
                 unoccupied.add(new int[] {0, col});
             }
         } else {
             if (fish[row + 1][col] == Config.EMPTY && sharks[row + 1][col] == Config.EMPTY) {
-                // adds the position int[] an array then into the unoccupied position
+                // adds the position to an array then into the unoccupied position
                 unoccupied.add(new int[] {row + 1, col});
             }
         }
@@ -847,12 +841,12 @@ public class WaTor {
             // checks to see that position is empty
             if (fish[row][fish[row].length - 1] == Config.EMPTY
                 && sharks[row][sharks[row].length - 1] == Config.EMPTY) {
-                // adds the position int[] an array then into the unoccupied position
+                // adds the position to an array then into the unoccupied position
                 unoccupied.add(new int[] {row, fish[row].length - 1});
             }
         } else {
             if (fish[row][col - 1] == Config.EMPTY && sharks[row][col - 1] == Config.EMPTY) {
-                // adds the position int[] an array then into the unoccupied position
+                // adds the position to an array then into the unoccupied position
                 unoccupied.add(new int[] {row, col - 1});
             }
         }
@@ -860,12 +854,12 @@ public class WaTor {
         if (col == fish[0].length - 1) {
             // checks to see that position is empty
             if (fish[row][0] == Config.EMPTY && sharks[row][0] == Config.EMPTY) {
-                // adds the position int[] an array then into the unoccupied position
+                // adds the position to an array then into the unoccupied position
                 unoccupied.add(new int[] {row, 0});
             }
         } else {
             if (fish[row][col + 1] == Config.EMPTY && sharks[row][col + 1] == Config.EMPTY) {
-                // adds the position int[] an array then into the unoccupied position
+                // adds the position to an array then into the unoccupied position
                 unoccupied.add(new int[] {row, col + 1});
             }
         }
@@ -893,7 +887,7 @@ public class WaTor {
             return neighbors.get(0); // returns the only value
         }
         if (neighbors.size() > 1) {
-            // stores a random number from (0 - neighbors.size()-1)
+            // stores a random number from 0 to (neighbors.size()-1)
             int randomPlace = randGen.nextInt(neighbors.size());
             return neighbors.get(randomPlace);
         } else {
@@ -902,9 +896,6 @@ public class WaTor {
             }
             return null;
         }
-
-
-
     }
 
     /**
@@ -1134,7 +1125,7 @@ public class WaTor {
                             // calls the chooseMove Method and stores it to array newList
                             newList = chooseMove(newArr, randGen);
                             if (sharks[i][j] >= sharksBreed) { // checks to see if shark is able to
-                                                               // breed
+                                // breed
                                 // calls sharkEatsFishAndBreeds using values from parameter
                                 sharkEatsFishAndBreeds(sharks, sharksMove, starve, fish, fishMove,
                                     i, j, newList[0], newList[1]);
@@ -1191,15 +1182,13 @@ public class WaTor {
         // creates a scanner instance
         PrintWriter Printfile = new PrintWriter(newFile); // Creates a new PrintWriter
 
-        // ittirates through the simulationParameters array
+        // iterates through the simulationParameters array
         for (int i = 0; i < simulationParameters.length; i++) {
 
             Printfile.println(Config.SIM_PARAMS[i] + "=" + simulationParameters[i]);
-            if (ajDebug) {
-                System.out.print(Config.SIM_PARAMS[i] + "=" + simulationParameters[i]);
-
-
-            }
+//            if (ajDebug) {
+//                System.out.print(Config.SIM_PARAMS[i] + "=" + simulationParameters[i]);
+//            }
         }
         Printfile.close();
     }
@@ -1232,7 +1221,7 @@ public class WaTor {
         int[] params = new int[Config.SIM_PARAMS.length];
         File parameterFile = new File(filename);
         Scanner input = new Scanner(parameterFile);
-        
+
         boolean contains = true;
         int i = 0;
         if (parameterFile.exists()) {
@@ -1245,27 +1234,31 @@ public class WaTor {
                     contains = false;
                     input.close(); // close the scanner
                 }
-                
+
                 String[] parts = nextLine.split("=");
                 String paramName = parts[0]; // 004
                 String paramValue = parts[1]; // 034556
-                
-                //String nextWord = input.next();
+
+                // String nextWord = input.next();
                 int foundIndex = indexForParam(paramName);
                 if (foundIndex > -1) { // if index greater than -1 , store in the array
-                    
-                    //int value = input.nextInt();
+
+                    // int value = input.nextInt();
                     params[i] = Integer.parseInt(paramValue);
                     i++;
                     if (i == Config.SIM_PARAMS.length) {
                         contains = false;
                     }
-                    }else {
-                        System.out.println("Unrecognized: " + paramName);
-                } 
+                } else {
+                    System.out.println("Unrecognized: " + paramName);
                 }
-            //}
+            }
+            // }
+        } else {
+            input.close();
+            return null;
         }
+        input.close();
         return params;
     }
 
@@ -1333,22 +1326,20 @@ public class WaTor {
             unit = 1;
         }
 
-
-        if (ajDebug) {
-            System.out.println("seed=" + simulationParameters[0]);
-            System.out.println("ocean_width=" + simulationParameters[1]);
-            System.out.println("ocean_height=" + simulationParameters[2]);
-            System.out.println("starting_fish=" + simulationParameters[3]);
-            System.out.println("starting_sharks=" + simulationParameters[4]);
-            System.out.println("fish_breed=" + simulationParameters[5]);
-            System.out.println("sharks_breed=" + simulationParameters[6]);
-            System.out.println("sharks_starve=" + simulationParameters[7]);
-            System.out.println("");
-            System.out.println("Population Chart");
-            System.out.println("Numbers of fish(" + Config.FISH_MARK + ") and sharks("
-                + Config.SHARK_MARK + ") in units of " + unit + ".");
-
-        }
+//        if (ajDebug) {
+//            System.out.println("seed=" + simulationParameters[0]);
+//            System.out.println("ocean_width=" + simulationParameters[1]);
+//            System.out.println("ocean_height=" + simulationParameters[2]);
+//            System.out.println("starting_fish=" + simulationParameters[3]);
+//            System.out.println("starting_sharks=" + simulationParameters[4]);
+//            System.out.println("fish_breed=" + simulationParameters[5]);
+//            System.out.println("sharks_breed=" + simulationParameters[6]);
+//            System.out.println("sharks_starve=" + simulationParameters[7]);
+//            System.out.println("");
+//            System.out.println("Population Chart");
+//            System.out.println("Numbers of fish(" + Config.FISH_MARK + ") and sharks("
+//                + Config.SHARK_MARK + ") in units of " + unit + ".");
+//        }
 
         for (int i = 0; i < history.size(); i++) {
             int[] historyValues = history.get(i);
@@ -1359,84 +1350,83 @@ public class WaTor {
             Printfile.printf(",S%3d", sharks);
             Printfile.printf("  %3d)", chronon);
 
-            if (ajDebug) {
-                System.out.printf("F%3d", fish);
-                System.out.printf(",S%3d", sharks);
-                System.out.printf(chronon+ ")");
-            }
+//            if (ajDebug) {
+//                System.out.printf("F%3d", fish);
+//                System.out.printf(",S%3d", sharks);
+//                System.out.printf(chronon + ")");
+//            }
 
-            int nsharks = (int) Math.ceil((double)sharks / unit);
-            int nfish = (int) Math.ceil((double)fish / unit) ;
+            int nsharks = (int) Math.ceil((double) sharks / unit);
+            int nfish = (int) Math.ceil((double) fish / unit);
 
-            if (ajDebug) {
-
-                System.out.println("sharks num " + sharks);
-                System.out.println("Fish num " + fish);
-                System.out.println("chronon num " + chronon);
-            }
+//            if (ajDebug) {
+//                System.out.println("sharks num " + sharks);
+//                System.out.println("Fish num " + fish);
+//                System.out.println("chronon num " + chronon);
+//            }
 
             if (fish >= sharks) {
                 for (int s = 0; s < nsharks; s++) {
                     Printfile.print(Config.SHARK_MARK);
-                    if (ajDebug) {
-                        System.out.print(Config.SHARK_MARK);
-                    }
+//                    if (ajDebug) {
+//                        System.out.print(Config.SHARK_MARK);
+//                    }
                 }
 
                 int printFish = nfish - nsharks;
 
                 for (int f = 0; f < printFish; f++) {
-                    Printfile.print(Config.FISH_MARK );
-                    if (ajDebug) {
-                        System.out.print(Config.FISH_MARK );
-                    }
-                }
-                
-                
-                int extraSpaces = 50 -(printFish + nsharks);
-                
-                for(int e=0; e<extraSpaces; e++ ) {
-                    Printfile.print(" ");
-                    if (ajDebug) {
-                        System.out.print(" ");
-                    }
-                }
-                
-                Printfile.println("");
-                if (ajDebug) {
-                    System.out.println("");
+                    Printfile.print(Config.FISH_MARK);
+//                    if (ajDebug) {
+//                        System.out.print(Config.FISH_MARK);
+//                    }
                 }
 
-            } else if (sharks >= fish){
+
+                int extraSpaces = 50 - (printFish + nsharks);
+
+                for (int e = 0; e < extraSpaces; e++) {
+                    Printfile.print(" ");
+//                    if (ajDebug) {
+//                        System.out.print(" ");
+//                    }
+                }
+
+                Printfile.println("");
+//                if (ajDebug) {
+//                    System.out.println("");
+//                }
+
+            } else if (sharks >= fish) {
                 for (int f = 0; f < nfish; f++) {
-                    Printfile.print(Config.FISH_MARK );
-                    if (ajDebug) {
-                        System.out.print(Config.FISH_MARK );
-                    }
+                    Printfile.print(Config.FISH_MARK);
+//                    if (ajDebug) {
+//                        System.out.print(Config.FISH_MARK);
+//                    }
                 }
 
                 int printShark = nsharks - nfish;
 
                 for (int s = 0; s < printShark; s++) {
-                    Printfile.print(Config.SHARK_MARK );
-                    if (ajDebug) {
-                        System.out.print(Config.SHARK_MARK );
-                    }
+                    Printfile.print(Config.SHARK_MARK);
+//                    if (ajDebug) {
+//                        System.out.print(Config.SHARK_MARK);
+//                    }
                 }
-                
- int extraSpaces = 50 -(printShark + nfish);
-                
-                for(int e=0; e<extraSpaces; e++ ) {
+
+                int extraSpaces = 50 - (printShark + nfish);
+
+                for (int e = 0; e < extraSpaces; e++) {
                     Printfile.print(" ");
-                    if (ajDebug) {
-                        System.out.print(" ");
-                    }
+//                    if (ajDebug) {
+//                        System.out.print(" ");
+//                    }
                 }
-                
+
                 Printfile.println("");
-                if (ajDebug) {
-                    System.out.println("");
-                }
+//                if (ajDebug) {
+//                    System.out.println("");
+//                }
             }
 
         }
